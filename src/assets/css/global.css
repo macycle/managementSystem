@@ -1,0 +1,8 @@
+/*全局样式表，用来初始化css*/
+
+html,body,#app{
+    height: 100%;
+    margin:0;
+    padding: 0;
+    border: 0;
+}
