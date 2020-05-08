@@ -6,3 +6,13 @@ html,body,#app{
     padding: 0;
     border: 0;
 }
+
+.el-breadcrumb{
+    margin-bottom: 15px;
+    font-size:15px ;
+    
+}
+
+.el-pagination{
+    align-self: center;
+}

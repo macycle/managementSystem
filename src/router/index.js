@@ -2,13 +2,19 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import login from '../components/login.vue'
 import home from '../components/home.vue'
+import welcome from '../components/welcome.vue'
+import users from '../components/user/users.vue'
 Vue.use(VueRouter)
 
   const routes = [
-  {path:'/',redirect:'login'},//让路由重定向到登录组件
+  {path:'/',redirect:'login'},//让路由重定向到登录组件，让vue.el-icon-app文件显示该页面
   {path:'/login',component:login},
-  {path:'/home',component:home}
-]
+  {path:'/home',component:home,redirect:'/welcome',//home里面还有一个router-view，所以可以设置redirect让他重定向到welcome页面
+    children:[{path:'/welcome',component:welcome},//path这里需要加/
+              {path:'/users',component:users}
+  ],
+    
+  }]
 
 
 
