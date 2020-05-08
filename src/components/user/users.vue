@@ -3,8 +3,8 @@
         <!--面包屑导航区域-->
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+            <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+            <el-breadcrumb-item>用户列表</el-breadcrumb-item>
         </el-breadcrumb>
 
         <!--卡片视图区域-->
@@ -44,7 +44,7 @@
                          <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeuser(scope.row.id)"></el-button>
                          <!--分配角色按钮-->
                          <el-tooltip  effect="dark" content="分配角色" placement="分配角色" :enterable="false">
-                            <el-button type="warning" size="mini" icon="el-icon-setting"></el-button>
+                            <el-button type="warning" size="mini" icon="el-icon-setting" @click="setrole(scope.row)"></el-button>
                          </el-tooltip>
                          
                      </template>
@@ -103,6 +103,24 @@
                 <el-button type="primary" @click="edituserinfo">确 定</el-button>  <!--直接让data中的editdialogVisible等于false,对话框显示为false-->
             </span>
         </el-dialog>
+
+        <!--分配角色对话框-->
+        <el-dialog title="分配角色" :visible.sync="setroledialogVisible" width="50%" @close="setroledialogclosed">
+            <div class="userclient">
+                <h3>当前的用户:{{userInfo.username}}</h3>
+                <h3>当前角色:{{userInfo.role_name}}</h3>
+                <h3>分配新角色:
+                    <el-select v-model="selectedroleid" placeholder="请选择">
+                        <el-option v-for="item in roleslist" :key="item.id" :label="item.roleName" :value="item.id">
+                        </el-option>
+                    </el-select>
+                </h3>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="setroledialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveroleinfo">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -149,7 +167,16 @@ export default {
             editformrules:{
                 email:[{required:true,message:'请输入用户邮箱',trigger:'blur'},{validator:checkemail,trigger:'blur'}],
                 mobile:[{required:true,message:'请输入手机号码',trigger:'blur'},{validator:checkphone,trigger:'blur'}]
-            }
+            },
+
+            //控制分配对话框显示与隐藏
+            setroledialogVisible:false,
+            //需要备分配角色的用户信息
+            userInfo:{},
+            //所以角色的数据列表
+            roleslist:[],
+            //已选中的角色
+            selectedroleid:''
         }
     },
     created(){
@@ -163,7 +190,7 @@ export default {
             }
             this.userlist=res.data.users
             this.total=res.data.total
-            console.log(res) 
+            //console.log(res) 
         },
         //监听pagesize改变的事件
         handleSizeChange(newsize){  //重新布置条数
@@ -173,7 +200,7 @@ export default {
         },
         //监听页码值改变的事件
         handleCurrentChange(newpage){
-            console.log(newpage)
+            //console.log(newpage)
             this.queryinfo.pagenum=newpage
             this.getuserlist()
 
@@ -254,7 +281,38 @@ export default {
                 this.$message.success('删除成功')
                 this.getuserlist()  //记得更新列表
         
+        },
+        //展示分配角色
+        async setrole(userinfo){
+            this.userInfo=userinfo
+            //在展示对话框时，先获取角色列表
+            const {data:res}=await this.$http.get('roles')
+            if(res.meta.status!==200){
+                return this.$message.error('获取角色列表失败')
+            }
+
+            this.roleslist=res.data
+
+            this.setroledialogVisible=true
+        },
+        async saveroleinfo(){
+            if(!this.selectedroleid){
+                return this.$message.error('请选择角色')
+            }
+            const {data:res}=await this.$http.put(`users/${this.userInfo.id}/role`,{rid:this.selectedroleid})
+                if(res.meta.status!==200){
+                    return this.$message.error('更新用户失败！')
+                }
+                this.$message.success('分配角色成功')
+                this.getuserlist()
+                this.setroledialogVisible=false
+        },
+        //监听分配角色对话框关闭时间
+        setroledialogclosed(){
+            this.selectedroleid=''
+            this.userInfo=''
         }
+
 
     }
     
@@ -280,7 +338,14 @@ export default {
     }
     
 }
+.userclient h3{
+    color: black;
+    
+}
 
+.el-table-column{
+    color:black
+}
 
 
 </style>

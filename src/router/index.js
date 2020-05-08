@@ -4,6 +4,11 @@ import login from '../components/login.vue'
 import home from '../components/home.vue'
 import welcome from '../components/welcome.vue'
 import users from '../components/user/users.vue'
+import rights from '../components/power/rights.vue'
+import roles from '../components/power/roles.vue'
+
+
+
 Vue.use(VueRouter)
 
   const routes = [
@@ -11,8 +16,11 @@ Vue.use(VueRouter)
   {path:'/login',component:login},
   {path:'/home',component:home,redirect:'/welcome',//home里面还有一个router-view，所以可以设置redirect让他重定向到welcome页面
     children:[{path:'/welcome',component:welcome},//path这里需要加/
-              {path:'/users',component:users}
-  ],
+              {path:'/users',component:users},
+              {path:'/rights',component:rights},
+              {path:'/roles',component:roles},  //这些路径都是后台写好的。所以最好跟着后台定好的写
+              
+            ],
     
   }]
 
