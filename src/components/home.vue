@@ -229,4 +229,12 @@ export default {
     padding: 10px;
     background-color:#010028;
     }
+
+
+
+.el-menu{
+    height:320px;
+    overflow: hidden;
+}
+   
 </style>

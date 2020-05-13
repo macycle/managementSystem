@@ -6,7 +6,7 @@ import welcome from '../components/welcome.vue'
 import users from '../components/user/users.vue'
 import rights from '../components/power/rights.vue'
 import roles from '../components/power/roles.vue'
-
+import cate from '../components/goods/cate.vue'
 
 
 Vue.use(VueRouter)
@@ -19,7 +19,7 @@ Vue.use(VueRouter)
               {path:'/users',component:users},
               {path:'/rights',component:rights},
               {path:'/roles',component:roles},  //这些路径都是后台写好的。所以最好跟着后台定好的写
-              
+              {path:'/categories',component:cate},
             ],
     
   }]
